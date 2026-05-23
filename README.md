@@ -5,9 +5,9 @@ A lightweight **Forge 1.20.1** mod that lets modpack developers and server owner
 ## Features
 
 - **Global exhaustion multiplier** — scale all hunger drain (sprinting, jumping, combat, regen, etc.) with a single config value.
-- **Player-only** — only affects player hunger (reserved option for future mob support).
+- **Player-only** — only affects player hunger.
 - **In-game commands** — check and reload settings without restarting.
-- **No dependencies** — works out of the box with Forge 47.x.
+- **No dependencies** — works out of the box.
 
 ## Config (`config/hungercontrol-common.toml`)
 
