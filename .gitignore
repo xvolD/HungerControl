@@ -13,6 +13,10 @@ out
 *.iml
 .idea
 
+# editor / AI helpers
+.vscode
+.claude
+
 # gradle
 build
 .gradle
