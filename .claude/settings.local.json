@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(curl -s \"https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml\")",
+      "Bash(curl -s \"https://maven.neoforged.net/releases/net/neoforged/neoforge/maven-metadata.xml\")",
+      "Bash(curl -s \"https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml\" > /tmp/forge_meta.xml && for v in 1.20.2 1.20.3 1.20.4 1.20.5 1.20.6; do echo \"$v:\"; grep \"$v-\" /tmp/forge_meta.xml | sed 's/.*<version>\\\\\\([^<]*\\\\\\)<.*/\\\\1/' | sort -V | tail -3; done && rm /tmp/forge_meta.xml)",
+      "Read(//tmp/**)"
+    ]
+  }
+}
