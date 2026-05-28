@@ -24,6 +24,7 @@ build
 # other
 eclipse
 run
+versions/
 
 # Files from Forge MDK
 forge*changelog.txt
