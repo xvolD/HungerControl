@@ -11,6 +11,7 @@ for /d %%D in ("%ROOT%versions\*") do (
     echo ========================================
     cd /d "%%D"
     set "JAVA_VER=21"
+    echo %%~nxD | findstr /C:"1.20.1" >/dev/null && set "JAVA_VER=17"
     echo %%~nxD | findstr /C:"1.20.2" >/dev/null && set "JAVA_VER=17"
     echo %%~nxD | findstr /C:"1.20.3" >/dev/null && set "JAVA_VER=17"
     echo %%~nxD | findstr /C:"1.20.4" >/dev/null && set "JAVA_VER=17"

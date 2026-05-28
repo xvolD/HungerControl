@@ -40,60 +40,48 @@ versions = [
         "fg_plugin_range": "[6.0,6.2)",
     },
     {
-        "name": "1.20.6-forge",
-        "mc": "1.20.6",
-        "forge": "50.2.8",
-        "loader_range": "[50,)",
-        "forge_range": "[50,)",
-        "mc_range": "[1.20.6,1.21)",
+        "name": "1.20.1-fabric",
+        "mc": "1.20.1",
+        "loader_version": "0.15.11",
+        "fabric_version": "0.92.2+1.20.1",
+        "loader_range": "[0.14.0,)",
+        "mc_range": "[1.20.1,1.21)",
         "java": 17,
-        "pack_format": 32,
-        "loader": "forge",
-        "fg_plugin_range": "[6.0,6.2)",
+        "pack_format": 15,
+        "loader": "fabric",
     },
     {
-        "name": "1.21-forge",
-        "mc": "1.21",
-        "forge": "51.0.33",
-        "loader_range": "[51,)",
-        "forge_range": "[51,)",
-        "mc_range": "[1.21,1.22)",
-        "java": 21,
-        "pack_format": 34,
-        "loader": "forge",
-        "fg_plugin_range": "[6.0,6.3)",
+        "name": "1.20.2-fabric",
+        "mc": "1.20.2",
+        "loader_version": "0.15.11",
+        "fabric_version": "0.91.6+1.20.2",
+        "loader_range": "[0.14.0,)",
+        "mc_range": "[1.20.2,1.21)",
+        "java": 17,
+        "pack_format": 18,
+        "loader": "fabric",
     },
     {
-        "name": "1.21-neoforge",
-        "mc": "1.21",
-        "neo": "21.0.167",
-        "loader_range": "[1,)",
-        "mc_range": "[1.21,1.22)",
-        "java": 21,
-        "pack_format": 34,
-        "loader": "neoforge",
+        "name": "1.20.3-fabric",
+        "mc": "1.20.3",
+        "loader_version": "0.15.11",
+        "fabric_version": "0.91.1+1.20.3",
+        "loader_range": "[0.14.0,)",
+        "mc_range": "[1.20.3,1.21)",
+        "java": 17,
+        "pack_format": 22,
+        "loader": "fabric",
     },
     {
-        "name": "1.21.1-forge",
-        "mc": "1.21.1",
-        "forge": "52.1.14",
-        "loader_range": "[52,)",
-        "forge_range": "[52,)",
-        "mc_range": "[1.21.1,1.22)",
-        "java": 21,
-        "pack_format": 34,
-        "loader": "forge",
-        "fg_plugin_range": "[6.0,6.3)",
-    },
-    {
-        "name": "1.21.1-neoforge",
-        "mc": "1.21.1",
-        "neo": "21.1.232",
-        "loader_range": "[1,)",
-        "mc_range": "[1.21.1,1.22)",
-        "java": 21,
-        "pack_format": 34,
-        "loader": "neoforge",
+        "name": "1.20.4-fabric",
+        "mc": "1.20.4",
+        "loader_version": "0.15.11",
+        "fabric_version": "0.97.2+1.20.4",
+        "loader_range": "[0.14.0,)",
+        "mc_range": "[1.20.4,1.21)",
+        "java": 17,
+        "pack_format": 22,
+        "loader": "fabric",
     },
 ]
 
@@ -419,6 +407,263 @@ NEOFORGE_CONFIG = FORGE_CONFIG.replace(
 NEOFORGE_COMMAND = FORGE_COMMAND
 NEOFORGE_MIXIN = FORGE_MIXIN
 
+# Fabric build.gradle template
+FABRIC_BUILD_GRADLE = '''buildscript {
+    repositories {
+        maven { url = 'https://maven.fabricmc.net/' }
+        mavenCentral()
+        gradlePluginPortal()
+    }
+    dependencies {
+        classpath 'net.fabricmc:fabric-loom:1.7-SNAPSHOT'
+    }
+}
+
+apply plugin: 'fabric-loom'
+apply plugin: 'maven-publish'
+apply plugin: 'java'
+
+version = mod_version
+group = mod_group_id
+
+base {
+    archivesName = mod_id
+}
+
+repositories {
+    maven { url = 'https://maven.fabricmc.net/' }
+    mavenCentral()
+}
+
+dependencies {
+    minecraft "com.mojang:minecraft:${minecraft_version}"
+    mappings loom.officialMojangMappings()
+    modImplementation "net.fabricmc:fabric-loader:${loader_version}"
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
+}
+
+processResources {
+    var replaceProperties = [
+            version: project.version,
+            mod_id: mod_id,
+            mod_version: mod_version,
+            mod_name: mod_name,
+            mod_description: mod_description,
+            mod_authors: mod_authors,
+            mod_license: mod_license,
+            minecraft_version: minecraft_version
+    ]
+    inputs.properties replaceProperties
+    filesMatching('fabric.mod.json') {
+        expand replaceProperties + [project: project]
+    }
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(%(java)d)
+    }
+    withSourcesJar()
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
+publishing {
+    publications {
+        register('mavenJava', MavenPublication) {
+            artifact jar
+        }
+    }
+    repositories {
+        maven {
+            url "file://${project.projectDir}/mcmodsrepo"
+        }
+    }
+}
+'''
+
+# Fabric settings.gradle template
+FABRIC_SETTINGS = '''pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        maven { name = 'Fabric'; url = 'https://maven.fabricmc.net/' }
+    }
+}
+'''
+
+# Fabric Java sources
+FABRIC_HUNGER_MOD = '''package io.github.xvold.hungercontrol;
+
+import io.github.xvold.hungercontrol.command.HungerControlCommand;
+import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class HungerControlMod implements ModInitializer {
+    public static final String MODID = "hungercontrol";
+    public static final Logger LOGGER = LoggerFactory.getLogger(MODID);
+
+    @Override
+    public void onInitialize() {
+        Config.load();
+        LOGGER.info("Hunger Control initialized. Multiplier: {}", Config.exhaustionMultiplier);
+        CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
+            HungerControlCommand.register(dispatcher);
+        });
+    }
+}
+'''
+
+FABRIC_CONFIG = '''package io.github.xvold.hungercontrol;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import net.fabricmc.loader.api.FabricLoader;
+
+import java.io.IOException;
+import java.io.Reader;
+import java.io.Writer;
+import java.nio.file.Files;
+import java.nio.file.Path;
+
+public class Config {
+    private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
+    private static final Path CONFIG_PATH = FabricLoader.getInstance().getConfigDir().resolve("hungercontrol.json");
+
+    public static boolean enable = true;
+    public static double exhaustionMultiplier = 1.0;
+    public static boolean affectPlayersOnly = true;
+    public static boolean debugLog = false;
+
+    public static void load() {
+        if (!Files.exists(CONFIG_PATH)) {
+            save();
+            return;
+        }
+        try (Reader reader = Files.newBufferedReader(CONFIG_PATH)) {
+            ConfigData data = GSON.fromJson(reader, ConfigData.class);
+            if (data != null) {
+                enable = data.enable;
+                exhaustionMultiplier = data.exhaustionMultiplier;
+                affectPlayersOnly = data.affectPlayersOnly;
+                debugLog = data.debugLog;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void save() {
+        ConfigData data = new ConfigData();
+        data.enable = enable;
+        data.exhaustionMultiplier = exhaustionMultiplier;
+        data.affectPlayersOnly = affectPlayersOnly;
+        data.debugLog = debugLog;
+        try (Writer writer = Files.newBufferedWriter(CONFIG_PATH)) {
+            GSON.toJson(data, writer);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void reloadFromFile() {
+        load();
+    }
+
+    private static class ConfigData {
+        boolean enable = true;
+        double exhaustionMultiplier = 1.0;
+        boolean affectPlayersOnly = true;
+        boolean debugLog = false;
+    }
+}
+'''
+
+FABRIC_COMMAND = '''package io.github.xvold.hungercontrol.command;
+
+import com.mojang.brigadier.CommandDispatcher;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.network.chat.Component;
+import io.github.xvold.hungercontrol.Config;
+
+public class HungerControlCommand {
+    public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
+        dispatcher.register(Commands.literal("hungercontrol")
+            .requires(source -> source.hasPermission(2))
+            .then(Commands.literal("info")
+                .executes(ctx -> {
+                    ctx.getSource().sendSuccess(() -> Component.literal(
+                        String.format("Hunger Control: enabled=%s, exhaustionMultiplier=%.2f", Config.enable, Config.exhaustionMultiplier)
+                    ), false);
+                    return 1;
+                })
+            )
+            .then(Commands.literal("reload")
+                .executes(ctx -> {
+                    Config.reloadFromFile();
+                    ctx.getSource().sendSuccess(() -> Component.literal(
+                        String.format("Hunger Control config reloaded. Current multiplier: %.2f", Config.exhaustionMultiplier)
+                    ), true);
+                    return 1;
+                })
+            )
+        );
+    }
+}
+'''
+
+FABRIC_MIXIN = '''package io.github.xvold.hungercontrol.mixin;
+
+import io.github.xvold.hungercontrol.Config;
+import net.minecraft.world.entity.player.Player;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.ModifyVariable;
+
+@Mixin(Player.class)
+public class PlayerMixin {
+    @ModifyVariable(method = "causeFoodExhaustion", at = @At("HEAD"), argsOnly = true)
+    private float hungercontrol$multiplyExhaustion(float amount) {
+        if (!Config.enable) {
+            return amount;
+        }
+        return amount * (float) Config.exhaustionMultiplier;
+    }
+}
+'''
+
+# Fabric mod metadata
+FABRIC_MOD_JSON = '''{
+  "schemaVersion": 1,
+  "id": "${mod_id}",
+  "version": "${mod_version}",
+  "name": "${mod_name}",
+  "description": "${mod_description}",
+  "authors": ["${mod_authors}"],
+  "license": "${mod_license}",
+  "icon": "hungercontrol.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "io.github.xvold.hungercontrol.HungerControlMod"
+    ]
+  },
+  "mixins": [
+    "hungercontrol.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.14.0",
+    "minecraft": "~${minecraft_version}",
+    "java": ">=17",
+    "fabric-api": "*"
+  }
+}
+'''
+
 for v in versions:
     root = os.path.join(BASE, "versions", v["name"])
     mkdirs(root)
@@ -454,6 +699,9 @@ for v in versions:
     if v["loader"] == "forge":
         gp_lines.insert(5, "forge_version=%s" % v["forge"])
         gp_lines.insert(6, "forge_version_range=%s" % v["forge_range"])
+    elif v["loader"] == "fabric":
+        gp_lines.insert(5, "loader_version=%s" % v["loader_version"])
+        gp_lines.insert(6, "fabric_version=%s" % v["fabric_version"])
     else:
         gp_lines.insert(5, "neo_version=%s" % v["neo"])
     write(os.path.join(root, "gradle.properties"), "\n".join(gp_lines) + "\n")
@@ -461,12 +709,16 @@ for v in versions:
     # settings.gradle
     if v["loader"] == "forge":
         write(os.path.join(root, "settings.gradle"), FORGE_SETTINGS)
+    elif v["loader"] == "fabric":
+        write(os.path.join(root, "settings.gradle"), FABRIC_SETTINGS)
     else:
         write(os.path.join(root, "settings.gradle"), NEOFORGE_SETTINGS)
 
     # build.gradle
     if v["loader"] == "forge":
         write(os.path.join(root, "build.gradle"), FORGE_BUILD_GRADLE % {"fg_range": v.get("fg_plugin_range", "[6.0,6.2)"), "java": v["java"]})
+    elif v["loader"] == "fabric":
+        write(os.path.join(root, "build.gradle"), FABRIC_BUILD_GRADLE % {"java": v["java"]})
     else:
         write(os.path.join(root, "build.gradle"), NEOFORGE_BUILD_GRADLE % {"java": v["java"]})
 
@@ -476,6 +728,11 @@ for v in versions:
         write(os.path.join(java_dir, "Config.java"), FORGE_CONFIG)
         write(os.path.join(cmd_dir, "HungerControlCommand.java"), FORGE_COMMAND)
         write(os.path.join(mixin_dir, "PlayerMixin.java"), FORGE_MIXIN)
+    elif v["loader"] == "fabric":
+        write(os.path.join(java_dir, "HungerControlMod.java"), FABRIC_HUNGER_MOD)
+        write(os.path.join(java_dir, "Config.java"), FABRIC_CONFIG)
+        write(os.path.join(cmd_dir, "HungerControlCommand.java"), FABRIC_COMMAND)
+        write(os.path.join(mixin_dir, "PlayerMixin.java"), FABRIC_MIXIN)
     else:
         write(os.path.join(java_dir, "HungerControlMod.java"), NEOFORGE_HUNGER_MOD)
         write(os.path.join(java_dir, "Config.java"), NEOFORGE_CONFIG)
@@ -491,17 +748,20 @@ for v in versions:
         "minVersion": "0.8",
         "package": "io.github.xvold.hungercontrol.mixin",
         "compatibilityLevel": "JAVA_%d" % v["java"],
-        "refmap": "hungercontrol.refmap.json",
         "mixins": ["PlayerMixin"],
         "client": [],
         "injectors": {"defaultRequire": 1}
     }
+    if v["loader"] != "fabric":
+        mixins["refmap"] = "hungercontrol.refmap.json"
     write(os.path.join(res_dir, "hungercontrol.mixins.json"), json.dumps(mixins, indent=2) + "\n")
 
     # mods.toml / neoforge.mods.toml
     if v["loader"] == "forge":
         tmpl = open(os.path.join(BASE, "src/main/resources/META-INF/mods.toml")).read()
         write(os.path.join(meta_dir, "mods.toml"), tmpl)
+    elif v["loader"] == "fabric":
+        write(os.path.join(res_dir, "fabric.mod.json"), FABRIC_MOD_JSON)
     else:
         neo_toml = '''modLoader="javafml"
 loaderVersion="${loader_version_range}"

@@ -6,7 +6,7 @@ ROOT="$(cd "$(dirname "$0")" && pwd)"
 build_version() {
     local dir="$1"
     local java_ver
-    if [[ "$dir" == *"1.20.2"* ]] || [[ "$dir" == *"1.20.3"* ]] || [[ "$dir" == *"1.20.4"* ]]; then
+    if [[ "$dir" == *"1.20.1"* ]] || [[ "$dir" == *"1.20.2"* ]] || [[ "$dir" == *"1.20.3"* ]] || [[ "$dir" == *"1.20.4"* ]]; then
         java_ver="17"
     else
         java_ver="21"
