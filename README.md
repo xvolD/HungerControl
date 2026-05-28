@@ -1,35 +1,73 @@
+<div align="center">
+
+<img src="src/main/resources/hungercontrol.png" width="96" alt="Hunger Control">
+
 # Hunger Control
 
-[![Minecraft](https://img.shields.io/badge/Minecraft-1.20.1-green.svg)](https://minecraft.net)
-[![Loader](https://img.shields.io/badge/Loader-Forge-orange.svg)](https://files.minecraftforge.net)
-[![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE.md)
+**Fine-tune hunger exhaustion for Minecraft modpacks**
 
-A lightweight **Forge** mod for **Minecraft 1.20.1** that lets modpack developers and server owners configure how fast players lose hunger.
+[![Minecraft](https://img.shields.io/badge/Minecraft-1.20.1--1.20.4-3C8529?logo=minecraft&logoColor=white)](https://minecraft.net)
+[![Forge](https://img.shields.io/badge/Forge-FF6F00?logo=curseforge&logoColor=white)](https://files.minecraftforge.net)
+[![Fabric](https://img.shields.io/badge/Fabric-DBBCC3?logo=fabric&logoColor=black)](https://fabricmc.net)
+[![License](https://img.shields.io/badge/License-MIT-4DA1FF)](LICENSE.md)
+[![CI](https://github.com/xvolD/HungerControl/actions/workflows/build.yml/badge.svg)](https://github.com/xvolD/HungerControl/actions)
+
+</div>
+
+## Overview
+
+A tiny, zero-dependency mod that gives modpack developers and server owners a single config value to control how fast players lose hunger. Sprinting, jumping, combat, health regeneration — everything that drains the hunger bar scales through one multiplier.
+
+## Supported Versions
+
+| Minecraft | Forge | Fabric | Java |
+|:---------:|:-----:|:------:|:----:|
+| 1.20.1 | ✓ | ✓ | 17 |
+| 1.20.2 | ✓ | ✓ | 17 |
+| 1.20.3 | ✓ | ✓ | 17 |
+| 1.20.4 | ✓ | ✓ | 17 |
+
+> Download JARs for your exact version from [Releases](../../releases).
 
 ## Features
 
-- **Global exhaustion multiplier** — scale all hunger drain (sprinting, jumping, combat, regen, etc.) with a single config value.
-- **Player-only** — only affects player hunger.
-- **In-game commands** — check and reload settings without restarting.
-- **Mixin-based** — clean, minimal injection into vanilla hunger logic.
+- **One config value rules them all** — a global exhaustion multiplier affects every vanilla hunger drain source.
+- **Players only** — currently scoped to player hunger, leaving mobs untouched.
+- **Live reload** — change settings on the fly without restarting the server or client.
+- **Mixin-powered** — injects cleanly into vanilla logic, no fragile reflection hacks.
 
-## Config
+## Configuration
 
+### Forge
 `config/hungercontrol-common.toml`
 
 | Option | Default | Description |
 |--------|---------|-------------|
-| `enable` | `true` | Toggle the mod on/off. |
-| `exhaustionMultiplier` | `1.0` | Global multiplier for hunger exhaustion. `0.5` = half speed, `0.2` = 5× slower. |
-| `affectPlayersOnly` | `true` | Currently always player-only; reserved for future expansion. |
-| `debugLog` | `false` | Log exhaustion changes to the console for debugging. |
+| `enable` | `true` | Master switch for the mod. |
+| `exhaustionMultiplier` | `1.0` | Global multiplier. `0.5` = half speed, `2.0` = double speed. Range: `0.0` – `100.0`. |
+| `affectPlayersOnly` | `true` | Reserved for future mob support; currently always player-only. |
+| `debugLog` | `false` | Print exhaustion changes to the log for troubleshooting. |
+
+### Fabric
+`config/hungercontrol.json`
+
+```json
+{
+  "enable": true,
+  "exhaustionMultiplier": 1.0,
+  "affectPlayersOnly": true,
+  "debugLog": false
+}
+```
 
 ## Commands
 
-Requires operator level 2.
+Requires operator level 2 (cheats enabled).
 
-- `/hungercontrol info` — displays current multiplier and enabled state.
-- `/hungercontrol reload` — reloads the config from disk.
+| Command | Description |
+|---------|-------------|
+| `/hungercontrol info` | Shows current multiplier and whether the mod is active. |
+| `/hungercontrol reload` | Re-reads the config file from disk. |
 
 ## Building
 
@@ -37,14 +75,14 @@ Requires operator level 2.
 ./gradlew build
 ```
 
-Built JARs will be in `build/libs/`.
+Output JAR lands in `build/libs/`.
 
 ## Installation
 
-1. Download the latest JAR from [Releases](../../releases).
+1. Grab the correct JAR for your **Minecraft version** and **loader** (Forge or Fabric) from the [Releases](../../releases) page.
 2. Drop it into your `mods/` folder.
-3. Launch the game once to generate the config, or edit it beforehand at `config/hungercontrol-common.toml`.
+3. Launch once to generate the config, or edit it beforehand.
 
 ## License
 
-MIT — feel free to include in any modpack, private or public.
+MIT — include it in any modpack, public or private, no attribution required.
