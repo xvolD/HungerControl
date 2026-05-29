@@ -9,6 +9,8 @@
 [![Minecraft](https://img.shields.io/badge/Minecraft-1.20.1--1.20.4-3C8529?logo=minecraft&logoColor=white)](https://minecraft.net)
 [![Forge](https://img.shields.io/badge/Forge-FF6F00?logo=curseforge&logoColor=white)](https://files.minecraftforge.net)
 [![Fabric](https://img.shields.io/badge/Fabric-DBBCC3?logo=fabric&logoColor=black)](https://fabricmc.net)
+[![CurseForge](https://img.shields.io/badge/CurseForge-F16436?logo=curseforge&logoColor=white)](https://www.curseforge.com/minecraft/mc-mods/hunger-control)
+[![Modrinth](https://img.shields.io/badge/Modrinth-1EA1CE?logo=modrinth&logoColor=white)](https://modrinth.com/mod/hunger-control)
 [![License](https://img.shields.io/badge/License-MIT-4DA1FF)](LICENSE.md)
 [![CI](https://github.com/xvolD/HungerControl/actions/workflows/build.yml/badge.svg)](https://github.com/xvolD/HungerControl/actions)
 [![Release](https://img.shields.io/github/v/release/xvolD/HungerControl?label=Release)](../../releases)
