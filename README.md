@@ -38,7 +38,6 @@ A tiny, zero-dependency mod that gives modpack developers and server owners a si
 
 ## Configuration
 
-### Forge
 `config/hungercontrol-common.toml`
 
 | Option | Default | Description |
@@ -48,7 +47,6 @@ A tiny, zero-dependency mod that gives modpack developers and server owners a si
 | `affectPlayersOnly` | `true` | Reserved for future mob support; currently always player-only. |
 | `debugLog` | `false` | Print exhaustion changes to the log for troubleshooting. |
 
-### Fabric
 `config/hungercontrol.json`
 
 ```json
