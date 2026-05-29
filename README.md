@@ -38,16 +38,12 @@ A tiny, zero-dependency mod that gives modpack developers and server owners a si
 
 ## Configuration
 
-`config/hungercontrol-common.toml`
-
 | Option | Default | Description |
 |--------|---------|-------------|
 | `enable` | `true` | Master switch for the mod. |
 | `exhaustionMultiplier` | `1.0` | Global multiplier. `0.5` = half speed, `2.0` = double speed. Range: `0.0` – `100.0`. |
 | `affectPlayersOnly` | `true` | Reserved for future mob support; currently always player-only. |
 | `debugLog` | `false` | Print exhaustion changes to the log for troubleshooting. |
-
-`config/hungercontrol.json`
 
 ```json
 {
