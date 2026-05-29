@@ -11,6 +11,7 @@
 [![Fabric](https://img.shields.io/badge/Fabric-DBBCC3?logo=fabric&logoColor=black)](https://fabricmc.net)
 [![License](https://img.shields.io/badge/License-MIT-4DA1FF)](LICENSE.md)
 [![CI](https://github.com/xvolD/HungerControl/actions/workflows/build.yml/badge.svg)](https://github.com/xvolD/HungerControl/actions)
+[![Release](https://img.shields.io/github/v/release/xvolD/HungerControl?label=Release)](../../releases)
 
 </div>
 
@@ -70,6 +71,20 @@ Requires operator level 2 (cheats enabled).
 ```
 
 Output JAR lands in `build/libs/`.
+
+## Releasing
+
+To publish a new release automatically via GitHub Actions:
+
+1. Switch to the branch you want to release (e.g. `1.20.1-fabric`).
+2. Create and push a version tag:
+   ```bash
+   git tag v1.0.0
+   git push origin v1.0.0
+   ```
+3. GitHub Actions will build the JAR and create a [Release](../../releases) with the artifact attached.
+
+Or trigger a release manually from the **Actions → Release → Run workflow** tab.
 
 ## Installation
 
